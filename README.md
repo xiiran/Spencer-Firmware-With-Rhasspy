@@ -1,3 +1,7 @@
+# Differences to original project
+- Change from ArduinoIDE to PlatformIO project
+
+
 # Spencer Firmware
 > The repository for the core firmware that comes preloaded on every Spencer.
 

@@ -1,16 +1,16 @@
 #include <Arduino.h>
 #include <Spencer.h>
-#include "src/State/State.h"
+#include "State/State.h"
 #include <Util/FlashTools.h>
-#include "src/State/IdleState.h"
-#include "src/Intent/IntentStore.h"
-#include "src/Services/TimeService/TimeService.h"
-#include "src/Intent/TimeIntent.h"
-#include "src/SerialID.h"
-#include "src/Services/SerialSetup.h"
-#include "src/State/StartupState.h"
-#include "src/Services/UpdateChecker.h"
-#include "src/HardwareTest.h"
+#include "State/IdleState.h"
+#include "Intent/IntentStore.h"
+#include "Services/TimeService/TimeService.h"
+#include "Intent/TimeIntent.h"
+#include "SerialID.h"
+#include "Services/SerialSetup.h"
+#include "State/StartupState.h"
+#include "Services/UpdateChecker.h"
+#include "HardwareTest.h"
 
 bool checkJig(){
 	if(Settings.get().calibrated) return false;
