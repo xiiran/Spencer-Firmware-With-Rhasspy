@@ -7,6 +7,7 @@
 #include "IdleState.h"
 #include "ErrorState.h"
 #include "SetupState.h"
+#include "../SpeechRhasspy/SpeechToIntentRhasspyHttp.h"
 
 ProcessState::ProcessState(const char* recordingFilename) : recordingFilename(recordingFilename){
 
@@ -28,7 +29,7 @@ void ProcessState::processIntent(){
 		}
 
 		retried = true;
-		SpeechToIntent.addJob({ recordingFilename, &intentResult });
+		SpeechToIntentRhasspyHttp.addJob({ recordingFilename, &intentResult });
 		return;
 	}else if(intentResult->error == IntentResult::KEY){
 		delete intentResult;
@@ -41,8 +42,7 @@ void ProcessState::processIntent(){
 		intentResult = nullptr;
 
 		changeState(new ErrorState(ErrorType::JSON));
-	}else if(intentResult->error == IntentResult::INTENT || intentResult->intent == nullptr
-			|| (!(settings = (std::string(intentResult->intent) == "Settings")) && (intent = IntentStore::findIntent(intentResult->intent)) == nullptr)){
+	}else if(intentResult->error == IntentResult::INTENT || intentResult->intent == nullptr){
 
 		delete intentResult;
 		intentResult = nullptr;
@@ -55,6 +55,24 @@ void ProcessState::processIntent(){
 		});
 
 		return;
+	}else{
+		settings = (std::string(intentResult->intent) == "Settings");
+		if(!settings){
+			intent = IntentStore::findIntent(intentResult->intent);
+			// if intent == nullptr, it is assumed that the intent is handled by another server connected to rhasspy
+			if(intent == nullptr){
+				delete intentResult;
+				intentResult = nullptr;
+
+				Playback.playMP3(SampleStore::load(SampleGroup::Special, "randomNoise6"));
+				Playback.setPlaybackDoneCallback([](){
+					Serial.println("Change to IdleState");
+					changeState(new IdleState());
+				});
+				
+				return;
+			}
+		}
 	}
 
 	if(settings){
@@ -91,7 +109,7 @@ void ProcessState::enter(){
 	char randomAnimation[20];
 	sprintf(randomAnimation, "GIF-loading%d.gif", loadingAnimationIndex);
 	LEDmatrix.startAnimation(new Animation( new SerialFlashFileAdapter(randomAnimation)), true);
-	SpeechToIntent.addJob({ recordingFilename, &intentResult });
+	SpeechToIntentRhasspyHttp.addJob({ recordingFilename, &intentResult });
 	LoopManager::addListener(this);
 	bleep();
 }

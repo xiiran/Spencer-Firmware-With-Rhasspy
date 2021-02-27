@@ -6,3 +6,7 @@
 
 !special
 !special/*
+
+!settings
+!settings/*
+rhasspy_settings.json
