@@ -36,3 +36,4 @@ cmake-build-debug
 build
 .vscode
 .pio
+rhasspy_settings.json

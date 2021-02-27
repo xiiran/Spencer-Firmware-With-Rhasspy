@@ -1,5 +1,7 @@
 # Differences to original project
 - Change from ArduinoIDE to PlatformIO project
+- Use [Rhasspy](https://rhasspy.readthedocs.io) HTTP API to process speech-to-intent
+- Add timer intent
 
 
 # Spencer Firmware

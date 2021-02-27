@@ -1,5 +1,6 @@
 #include "IntentStore.h"
 #include "TimeIntent.h"
+#include "TimerIntent.h"
 #include "JokeIntent.h"
 #include "StopwatchIntent.h"
 #include "WeatherIntent.h"
@@ -10,7 +11,7 @@
 std::map<const char*, IntentInfo, IntentStore::CStrCompare> IntentStore::storage;
 
 void IntentStore::fillStorage(){
-	storage["Time"] = {
+	storage["GetTime"] = {
 			"time",
 			[](const std::map<std::string, std::string>& params) -> Intent*{
 				return new TimeIntent(TimeIntentType::TIME);
@@ -26,7 +27,7 @@ void IntentStore::fillStorage(){
 			nullptr
 	};
 
-	storage["Joke"] = {
+	storage["GetJoke"] = {
 			"joke",
 			[](const std::map<std::string, std::string>&) -> Intent*{ return new JokeIntent(); },
 			nullptr
@@ -38,7 +39,21 @@ void IntentStore::fillStorage(){
 			nullptr
 	};
 
-	storage["Weather"] = {
+	storage["Timer"] = {
+			"timer",
+			[](const std::map<std::string, std::string>& params) -> Intent*{ 
+				int16_t days = 0;
+				int8_t hours = (params.find("hours") != params.end()) ? static_cast<int8_t>(atoi(params.at("hours").c_str())) : 0;
+				int8_t minutes = (params.find("minutes") != params.end()) ? static_cast<int8_t>(atoi(params.at("minutes").c_str())) : 0;
+				int8_t seconds = (params.find("seconds") != params.end()) ? static_cast<int8_t>(atoi(params.at("seconds").c_str())) : 0;
+				TimeSpan timerDuration(days, hours, minutes, seconds);
+				
+				return new TimerIntent(timerDuration); 
+			},
+			nullptr
+	};
+
+	storage["GetWeather"] = {
 			"weather",
 			[](const std::map<std::string, std::string>& params) -> Intent*{
 				WeatherIntentParam launchParams = WeatherIntentParam::TODAY;
