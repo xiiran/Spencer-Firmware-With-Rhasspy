@@ -10,7 +10,7 @@
 std::map<const char*, IntentInfo, IntentStore::CStrCompare> IntentStore::storage;
 
 void IntentStore::fillStorage(){
-	storage["Time"] = {
+	storage["GetTime"] = {
 			"time",
 			[](const std::map<std::string, std::string>& params) -> Intent*{
 				return new TimeIntent(TimeIntentType::TIME);
@@ -26,7 +26,7 @@ void IntentStore::fillStorage(){
 			nullptr
 	};
 
-	storage["Joke"] = {
+	storage["GetJoke"] = {
 			"joke",
 			[](const std::map<std::string, std::string>&) -> Intent*{ return new JokeIntent(); },
 			nullptr
@@ -38,7 +38,7 @@ void IntentStore::fillStorage(){
 			nullptr
 	};
 
-	storage["Weather"] = {
+	storage["GetWeather"] = {
 			"weather",
 			[](const std::map<std::string, std::string>& params) -> Intent*{
 				WeatherIntentParam launchParams = WeatherIntentParam::TODAY;
